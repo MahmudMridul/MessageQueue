@@ -42,19 +42,19 @@
             Console.WriteLine("\nScenario 1: Single Producer → Single Consumer");
             await RunSingleProducerSingleConsumer(queue, cancellationToken);
 
-            Console.WriteLine("\nWaiting 2 seconds...\n");
-            await Task.Delay(2000, cancellationToken);
+            //Console.WriteLine("\nWaiting 2 seconds...\n");
+            //await Task.Delay(2000, cancellationToken);
 
-            // Scenario 2: Multiple Producers, Single Consumer
-            Console.WriteLine("Scenario 2: Multiple Producers → Single Consumer");
-            await RunMultipleProducersSingleConsumer(queue, cancellationToken);
+            //// Scenario 2: Multiple Producers, Single Consumer
+            //Console.WriteLine("Scenario 2: Multiple Producers → Single Consumer");
+            //await RunMultipleProducersSingleConsumer(queue, cancellationToken);
 
-            Console.WriteLine("\nWaiting 2 seconds...\n");
-            await Task.Delay(2000, cancellationToken);
+            //Console.WriteLine("\nWaiting 2 seconds...\n");
+            //await Task.Delay(2000, cancellationToken);
 
-            // Scenario 3: Single Producer, Multiple Consumers
-            Console.WriteLine("Scenario 3: Single Producer → Multiple Consumers");
-            await RunSingleProducerMultipleConsumers(queue, cancellationToken);
+            //// Scenario 3: Single Producer, Multiple Consumers
+            //Console.WriteLine("Scenario 3: Single Producer → Multiple Consumers");
+            //await RunSingleProducerMultipleConsumers(queue, cancellationToken);
         }
 
         static async Task RunSingleProducerSingleConsumer(MessageQueue<Message> queue, CancellationToken cancellationToken)
