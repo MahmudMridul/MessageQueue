@@ -1,46 +1,55 @@
-﻿using System.Collections.Concurrent;
+using System.Threading.Channels;
 
 namespace MessageQueue
 {
     public class MessageQueue<T>
     {
-        private readonly ConcurrentQueue<T> _queue = new ConcurrentQueue<T>();
-        private volatile bool _isRunning = true;
+        private readonly Channel<T> _channel;
+        private readonly ChannelWriter<T> _writer;
+        private readonly ChannelReader<T> _reader;
 
-        public int Count => _queue.Count;
-        public bool isEmpty => _queue.IsEmpty;
-
-        public void Enqueue(T message, string producerName)
+        public MessageQueue(int capacity = 100)
         {
-            if (!_isRunning)
-                throw new InvalidOperationException("Queue is stopped");
+            var options = new BoundedChannelOptions(capacity)
+            {
+                FullMode = BoundedChannelFullMode.Wait,
+                SingleReader = false,
+                SingleWriter = false
+            };
 
-            _queue.Enqueue(message);
+            _channel = Channel.CreateBounded<T>(options);
+            _writer = _channel.Writer;
+            _reader = _channel.Reader;
+        }
+
+        public int Count => _reader.Count;
+        public bool IsEmpty => _reader.Count == 0;
+
+        public async Task EnqueueAsync(T message, string producerName, CancellationToken cancellationToken = default)
+        {
+            await _writer.WriteAsync(message, cancellationToken);
             Console.WriteLine($"{producerName} enqueued {message}");
         }
 
         public async Task<T?> DequeueAsync(string consumerName, CancellationToken cancellationToken = default)
         {
-            while (_isRunning && !cancellationToken.IsCancellationRequested)
+            try
             {
-                if (_queue.TryDequeue(out T? message))
-                {
-                    Console.WriteLine($"{consumerName} dequeued {message}");
-                    return message;
-                }
-
-                // Wait a bit before checking again (simple polling)
-                await Task.Delay(100, cancellationToken);
+                var message = await _reader.ReadAsync(cancellationToken);
+                Console.WriteLine($"{consumerName} dequeued {message}");
+                return message;
             }
-
-            return default(T);
+            catch (InvalidOperationException)
+            {
+                // Channel was completed
+                return default(T);
+            }
         }
 
         public void Stop()
         {
-            _isRunning = false;
-            Console.WriteLine("Queue stopped");
+            _writer.Complete();
+            Console.WriteLine("Channel queue stopped");
         }
-
     }
 }

@@ -4,11 +4,11 @@
     {
         public static async Task Main(string[] args)
         {
-            Console.WriteLine("Simple Message Queue Demo");
-            Console.WriteLine("============================");
+            Console.WriteLine("Channel-Based Message Queue Demo");
+            Console.WriteLine("===============================");
 
-            // Create the message queue
-            var messageQueue = new MessageQueue<Message>();
+            // Create the channel-based message queue
+            var messageQueue = new MessageQueue<Message>(capacity: 50);
 
             // Create cancellation token for clean shutdown
             using var cts = new CancellationTokenSource();

@@ -1,4 +1,4 @@
-﻿namespace MessageQueue
+namespace MessageQueue
 {
     public class MessageConsumer
     {
@@ -15,14 +15,25 @@
         {
             Console.WriteLine($"{_name} started consuming...");
 
-            while (!cancellationToken.IsCancellationRequested)
+            try
             {
-                var message = await _queue.DequeueAsync(_name, cancellationToken);
-
-                if (message != null)
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    await ProcessMessageAsync(message);
+                    var message = await _queue.DequeueAsync(_name, cancellationToken);
+
+                    if (message != null)
+                    {
+                        await ProcessMessageAsync(message);
+                    }
+                    else
+                    {
+                        break; // Queue was stopped
+                    }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                // Expected when cancellation is requested
             }
 
             Console.WriteLine($"{_name} stopped consuming");

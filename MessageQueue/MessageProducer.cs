@@ -1,5 +1,3 @@
-﻿
-
 namespace MessageQueue
 {
     public class MessageProducer
@@ -13,7 +11,7 @@ namespace MessageQueue
             _name = name;
         }
 
-        public async Task ProduceMessagesAsync(int count, int delayMs = 1000)
+        public async Task ProduceMessagesAsync(int count, int delayMs = 1000, CancellationToken cancellationToken = default)
         {
             for (int i = 1; i <= count; i++)
             {
@@ -22,8 +20,8 @@ namespace MessageQueue
                     Content = $"{_name} Message {i}"
                 };
 
-                _queue.Enqueue(message, _name);
-                await Task.Delay(delayMs);
+                await _queue.EnqueueAsync(message, _name, cancellationToken);
+                await Task.Delay(delayMs, cancellationToken);
             }
 
             Console.WriteLine($"{_name} finished producing {count} messages");
