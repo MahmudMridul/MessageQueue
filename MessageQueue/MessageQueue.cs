@@ -10,22 +10,22 @@ namespace MessageQueue
         public int Count => _queue.Count;
         public bool isEmpty => _queue.IsEmpty;
 
-        public void Enqueue(T message)
+        public void Enqueue(T message, string producerName)
         {
             if (!_isRunning)
                 throw new InvalidOperationException("Queue is stopped");
 
             _queue.Enqueue(message);
-            Console.WriteLine($"Enqueued: {message}");
+            Console.WriteLine($"{producerName} enqueued {message}");
         }
 
-        public async Task<T?> DequeueAsync(CancellationToken cancellationToken = default)
+        public async Task<T?> DequeueAsync(string consumerName, CancellationToken cancellationToken = default)
         {
             while (_isRunning && !cancellationToken.IsCancellationRequested)
             {
                 if (_queue.TryDequeue(out T? message))
                 {
-                    Console.WriteLine($"Dequeued: {message}");
+                    Console.WriteLine($"{consumerName} dequeued {message}");
                     return message;
                 }
 

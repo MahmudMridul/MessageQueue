@@ -19,10 +19,10 @@ namespace MessageQueue
             {
                 var message = new Message
                 {
-                    Content = $"{_name} - Message {i}"
+                    Content = $"{_name} Message {i}"
                 };
 
-                _queue.Enqueue(message);
+                _queue.Enqueue(message, _name);
                 await Task.Delay(delayMs);
             }
 

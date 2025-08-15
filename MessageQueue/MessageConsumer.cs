@@ -17,7 +17,7 @@
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                var message = await _queue.DequeueAsync(cancellationToken);
+                var message = await _queue.DequeueAsync(_name, cancellationToken);
 
                 if (message != null)
                 {
@@ -30,12 +30,12 @@
 
         private async Task ProcessMessageAsync(Message message)
         {
-            Console.WriteLine($"{_name} processing: {message}");
+            Console.WriteLine($"{_name} processing {message}");
 
             // Simulate processing time
             await Task.Delay(500);
 
-            Console.WriteLine($"{_name} completed: {message.Content}");
+            Console.WriteLine($"{_name} completed {message.Content}");
         }
     }
 }
