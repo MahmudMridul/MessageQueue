@@ -13,7 +13,7 @@ namespace MessageQueue
 
         public async Task ConsumeMessagesAsync(CancellationToken cancellationToken)
         {
-            Console.WriteLine($"{_name} started consuming...");
+            Console.WriteLine($"{_name} started consuming... | [{DateTime.UtcNow:HH:mm:ss.fff}]");
 
             try
             {
@@ -36,17 +36,17 @@ namespace MessageQueue
                 // Expected when cancellation is requested
             }
 
-            Console.WriteLine($"{_name} stopped consuming");
+            Console.WriteLine($"{_name} stopped consuming | [{DateTime.UtcNow:HH:mm:ss.fff}]");
         }
 
         private async Task ProcessMessageAsync(Message message)
         {
-            Console.WriteLine($"{_name} processing {message}");
+            Console.WriteLine($"{_name} processing {message} | [{DateTime.UtcNow:HH:mm:ss.fff}]");
 
             // Simulate processing time
             await Task.Delay(500);
 
-            Console.WriteLine($"{_name} completed {message.Content}");
+            Console.WriteLine($"{_name} completed {message.Content} | [{DateTime.UtcNow:HH:mm:ss.fff}]");
         }
     }
 }

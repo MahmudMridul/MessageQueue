@@ -17,14 +17,14 @@ namespace MessageQueue
             {
                 var message = new Message
                 {
-                    Content = $"{_name} Message {i}"
+                    Content = $"[{_name} - Message - 0{i}]"
                 };
 
                 await _queue.EnqueueAsync(message, _name, cancellationToken);
                 await Task.Delay(delayMs, cancellationToken);
             }
 
-            Console.WriteLine($"{_name} finished producing {count} messages");
+            Console.WriteLine($"{_name} finished producing {count} messages | [{DateTime.UtcNow:HH:mm:ss.fff}]");
         }
     }
 }
