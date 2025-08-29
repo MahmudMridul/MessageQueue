@@ -4,13 +4,7 @@
     {
         public static async Task Main(string[] args)
         {
-            Console.WriteLine("Simple Message Queue Demo");
-            Console.WriteLine("============================");
-
-            // Create the message queue
             var messageQueue = new MessageQueue();
-
-           
             try
             {
                 await RunDemo(messageQueue);
@@ -110,27 +104,22 @@
 
         static async Task RunMultipleProducerMultipleConsumer(MessageQueue queue)
         {
-            var producerA = new MessageProducer(queue, "Producer-A");
-            var producerB = new MessageProducer(queue, "Producer-B");
-            var producerC = new MessageProducer(queue, "Producer-C");
-            var consumer1 = new MessageConsumer(queue, "Consumer-1");
-            var consumer2 = new MessageConsumer(queue, "Consumer-2");
+            var producerA = new MessageProducer(queue, "Google");
+            var producerB = new MessageProducer(queue, "Amazon");
+            //var producerC = new MessageProducer(queue, "Producer-C");
+            var consumer1 = new MessageConsumer(queue, "Bob");
+            var consumer2 = new MessageConsumer(queue, "Jack");
 
-            var producerTasks = new[]
+            var allTasks = new[]
             {
                 Task.Run(() => producerA.ProduceMessagesAsync(5, 200)),
                 Task.Run(() => producerB.ProduceMessagesAsync(3, 400)),
-                Task.Run(() => producerC.ProduceMessagesAsync(3, 500)),
-            };
-
-            var consumerTasks = new[]
-            {
+                //Task.Run(() => producerC.ProduceMessagesAsync(3, 500)),
                 Task.Run(() => consumer1.ConsumeMessagesAsync(500)),
                 Task.Run(() => consumer2.ConsumeMessagesAsync(1000))
             };
-
-            await Task.WhenAll(consumerTasks);
-            await Task.WhenAll(producerTasks);
+            
+            await Task.WhenAll(allTasks);
         }
     }
 }

@@ -17,16 +17,16 @@ namespace MessageQueue
         {
             for (int i = 1; i <= count; i++)
             {
-                var message = new Message
+                var message = new Message()
                 {
-                    Content = $"{_name} message-{i}"
+                    Content = $"{_name}-msg-{i}"
                 };
-
                 _queue.Enqueue(message, _name);
                 await Task.Delay(delayMs);
             }
-
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{_name} finished producing {count} messages");
+            Console.ResetColor();
         }
     }
 }

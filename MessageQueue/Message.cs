@@ -3,6 +3,7 @@
     public class Message
     {
         private string _content = string.Empty;
+
         public string Content 
         { 
             get => _content; 

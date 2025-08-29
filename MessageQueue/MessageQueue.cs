@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+﻿
 
 namespace MessageQueue
 {
@@ -21,7 +21,9 @@ namespace MessageQueue
             {
                 _queue.Enqueue(message);
             }
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"{producerName} enqueued {message.ToString()}");
+            Console.ResetColor();
         }
 
         public Message? Dequeue(string consumerName)
@@ -31,7 +33,9 @@ namespace MessageQueue
             {
                 _queue.TryDequeue(out result);
             }
+            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine($"{consumerName} dequeued {result?.ToString()}");
+            Console.ResetColor();
             return result;
         }
 
