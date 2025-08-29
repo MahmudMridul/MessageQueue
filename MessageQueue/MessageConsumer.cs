@@ -2,40 +2,40 @@
 {
     public class MessageConsumer
     {
-        private readonly MessageQueue<Message> _queue;
+        private readonly MessageQueue _queue;
         private readonly string _name;
 
-        public MessageConsumer(MessageQueue<Message> queue, string name)
+        public MessageConsumer(MessageQueue queue, string name)
         {
             _queue = queue;
             _name = name;
         }
 
-        public async Task ConsumeMessagesAsync(CancellationToken cancellationToken)
+        public async void ConsumeMessagesAsync(int delayMs = 500)
         {
             Console.WriteLine($"{_name} started consuming...");
 
-            while (!cancellationToken.IsCancellationRequested)
+            while (!_queue.isEmpty()) 
             {
-                var message = await _queue.DequeueAsync(_name, cancellationToken);
+                var message = _queue.Dequeue(_name);
 
                 if (message != null)
                 {
-                    await ProcessMessageAsync(message);
+                    await ProcessMessageAsync(message, delayMs);
                 }
             }
 
             Console.WriteLine($"{_name} stopped consuming");
         }
 
-        private async Task ProcessMessageAsync(Message message)
+        private async Task ProcessMessageAsync(Message message, int delayMs)
         {
             Console.WriteLine($"{_name} processing {message}");
 
             // Simulate processing time
-            await Task.Delay(500);
+            await Task.Delay(delayMs);
 
-            Console.WriteLine($"{_name} completed {message.Content}");
+            Console.WriteLine($"{_name} completed processing {message}");
         }
     }
 }

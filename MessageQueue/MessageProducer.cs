@@ -4,10 +4,10 @@ namespace MessageQueue
 {
     public class MessageProducer
     {
-        private readonly MessageQueue<Message> _queue;
+        private readonly MessageQueue _queue;
         private readonly string _name;
 
-        public MessageProducer(MessageQueue<Message> queue, string name)
+        public MessageProducer(MessageQueue queue, string name)
         {
             _queue = queue;
             _name = name;
@@ -19,7 +19,7 @@ namespace MessageQueue
             {
                 var message = new Message
                 {
-                    Content = $"{_name} Message {i}"
+                    Content = $"{_name} message-{i}"
                 };
 
                 _queue.Enqueue(message, _name);

@@ -2,44 +2,37 @@
 
 namespace MessageQueue
 {
-    public class MessageQueue<T>
+    public class MessageQueue
     {
-        private readonly ConcurrentQueue<T> _queue = new ConcurrentQueue<T>();
-        private volatile bool _isRunning = true;
+        private readonly Queue<Message> _queue = new Queue<Message>();
+        private readonly Object _lock = new Object();
 
-        public int Count => _queue.Count;
-        public bool isEmpty => _queue.IsEmpty;
-
-        public void Enqueue(T message, string producerName)
+        public bool isEmpty()
         {
-            if (!_isRunning)
-                throw new InvalidOperationException("Queue is stopped");
-
-            _queue.Enqueue(message);
-            Console.WriteLine($"{producerName} enqueued {message}");
-        }
-
-        public async Task<T?> DequeueAsync(string consumerName, CancellationToken cancellationToken = default)
-        {
-            while (_isRunning && !cancellationToken.IsCancellationRequested)
+            lock (_lock)
             {
-                if (_queue.TryDequeue(out T? message))
-                {
-                    Console.WriteLine($"{consumerName} dequeued {message}");
-                    return message;
-                }
-
-                // Wait a bit before checking again (simple polling)
-                await Task.Delay(100, cancellationToken);
+                return _queue.Count == 0;
             }
-
-            return default(T);
         }
 
-        public void Stop()
+        public void Enqueue(Message message, string producerName)
         {
-            _isRunning = false;
-            Console.WriteLine("Queue stopped");
+            lock (_lock)
+            {
+                _queue.Enqueue(message);
+            }
+            Console.WriteLine($"{producerName} enqueued {message.ToString()}");
+        }
+
+        public Message? Dequeue(string consumerName)
+        {
+            Message? result;
+            lock (_lock)
+            {
+                _queue.TryDequeue(out result);
+            }
+            Console.WriteLine($"{consumerName} dequeued {result?.ToString()}");
+            return result;
         }
 
     }
